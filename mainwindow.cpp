@@ -330,7 +330,7 @@ int Downprc(QString name)
 int HexToBinFile(int &length, uchar* pbuf)
 {
     FILE* in;
-    if((in =fopen("fw.hex","rt"))==NULL)
+    if((in =fopen("N1401_8350_68F83_6444456626_Hynitron_20170323_452703_US_AN_NST_PTP_MB277_Tv9.hex","rt"))==NULL)
     {
         QMessageBox::critical(0 ,
         "Error" , "Can not finded hex file",

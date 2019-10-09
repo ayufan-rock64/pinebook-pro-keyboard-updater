@@ -39,7 +39,7 @@ void    Log                 (QString   sMessage);
 
 
 #define VID 0x258a
-#define PID 0x000C
+#define PID 0x001e
 
 #define BOOTVID 0x0603
 #define BOOTPID 0x1020
