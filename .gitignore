@@ -1,0 +1,8 @@
+Makefile
+*.o
+moc_*
+ui_*
+.qmake.*
+*.pro.*
+HLK_SHXXFXX_Update_tool
+
