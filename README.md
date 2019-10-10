@@ -7,7 +7,7 @@ This application does upgrade firmware of the built-in keyboard and touchpad.
 ```bash
 git clone https://github.com/ayufan/pinebook-pro-keyboard-updater
 cd pinebook-pro-keyboard-updater
-sudo apt-get install qt5-default
+sudo apt-get install qt5-default libusb-1.0-0-dev
 qmake
 make
 ```
