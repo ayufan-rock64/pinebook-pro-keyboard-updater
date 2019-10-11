@@ -25,3 +25,7 @@ sudo ./HLK_SHXXFXX_Update_tool
 3. Once upgrade finishes, the keyboard/touchpad will not yet work,
 4. Suspend (closing lid) or force shutdown (with power button),
 5. After resume or restart touchpad should start working.
+
+## License
+
+MIT, 2019, SHEN ZHEN HAI LUCK ELECTRONIC TECHNOLOGY CO., LTD
