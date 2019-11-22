@@ -19,6 +19,8 @@ int main(int argc, char *argv[])
     return rc;
   }
 
+  rc = switch_to_boot_mode();
+
   rc = write_kb_fw("files/fw.hex");
   if (rc < 0) {
     return rc;
