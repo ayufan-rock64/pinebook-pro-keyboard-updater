@@ -1,5 +1,7 @@
 #include "updater.h"
 
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
 #define SHORTREPOID			0x05
 #define LONGREPOID			0x06
 #define SHORTDEVLENGHT		6
@@ -98,7 +100,7 @@ int write_tp_fw(const unsigned char *data, int data_length)
     int try;
     int rc;
 
-    if (data_length != len) {
+    if (data_length < 24576 && len < data_length) {
         printf("[*] Touchpad firmware needs to be %d, and is %d\n",
             data_length, len);
         return -1;
@@ -141,7 +143,8 @@ int write_tp_fw(const unsigned char *data, int data_length)
         *ptr++ = 0xCC;
         *ptr++ = 0xCC;
 
-        memcpy(ptr, &data[offset], block_size);
+        memset(ptr, 0, block_size);
+        memcpy(ptr, &data[offset], MIN(block_size, len-offset));
         ptr += block_size;
         
         *ptr++ = 0xEE;
