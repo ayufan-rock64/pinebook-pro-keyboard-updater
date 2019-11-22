@@ -59,15 +59,17 @@ static int touchpad_verify(int type, int pass)
     return 0;
 }
 
-int try_touchpad_verify(int type, int pass)
+int try_touchpad_verify(int type, int pass, int sendcmd)
 {
-    unsigned char data[6] = {
-        SHORTREPOID, STATUSCMD, type
-    };
+    if (sendcmd) {
+        unsigned char data[6] = {
+            SHORTREPOID, STATUSCMD, type
+        };
 
-    int rc = libusb_control_transfer(devh, 0x21, 0x09, 0x0305, 1, data, sizeof(data), 1000);
-    if(rc < 0) {
-        return -1;
+        int rc = libusb_control_transfer(devh, 0x21, 0x09, 0x0305, 1, data, sizeof(data), 1000);
+        if(rc < 0) {
+            return -1;
+        }
     }
 
     int try;
@@ -119,7 +121,7 @@ int write_tp_fw(const char *filename)
         goto finish;
     }
 
-    rc = try_touchpad_verify(ICERASE, ICERASE_PASS);
+    rc = try_touchpad_verify(ICERASE, ICERASE_PASS, 0);
     if (rc < 0) {
         printf(">>> Touchpad erase failed\n");
         goto finish;
@@ -163,7 +165,7 @@ int write_tp_fw(const char *filename)
         
         usleep(150*1000);
 
-        rc = try_touchpad_verify(VERIFY1KDATA, VERIFY1KDATA_PASS);
+        rc = try_touchpad_verify(VERIFY1KDATA, VERIFY1KDATA_PASS, 1);
         if (rc < 0) {
             printf(">>> Touchpad verify data failed\n");
             goto finish;
@@ -172,7 +174,7 @@ int write_tp_fw(const char *filename)
 
     usleep(50*1000);
 
-    rc = try_touchpad_verify(ENDPROGRAM, ENDPROGRAM_PASS);
+    rc = try_touchpad_verify(ENDPROGRAM, ENDPROGRAM_PASS, 1);
     if (rc < 0) {
         printf(">>> Touchpad end program verify\n");
         goto finish;
@@ -180,7 +182,7 @@ int write_tp_fw(const char *filename)
 
     usleep(50*1000);
 
-    rc = try_touchpad_verify(VERIFY_CHECKSUM, VERIFY_CHECKSUM_PASS);
+    rc = try_touchpad_verify(VERIFY_CHECKSUM, VERIFY_CHECKSUM_PASS, 1);
     if (rc < 0) {
         printf(">>> Touchpad end program verify\n");
         goto finish;
@@ -188,7 +190,7 @@ int write_tp_fw(const char *filename)
 
     usleep(50*1000);
     
-    rc = try_touchpad_verify(PROGRAMPASS, 0);
+    rc = try_touchpad_verify(PROGRAMPASS, 0, 1);
     if (rc < 0) {
         printf(">>> Touchpad end program verify\n");
         goto finish;

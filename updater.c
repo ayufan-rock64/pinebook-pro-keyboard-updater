@@ -6,7 +6,7 @@ int devintf;
 
 static int usage(const char *cmd)
 {
-  printf("usage: %s [convert|flash]\n", cmd);
+  printf("usage: %s [convert|flash-kb|flash-tb]\n", cmd);
   return -1;
 }
 
@@ -31,11 +31,11 @@ static int convert()
   return 0;
 }
 
-static int flash()
+static int flash_tp()
 {
   int rc;
-  
-  rc = write_kb_fw("files/Hynitron_NO_power_co_tp_update_kbfw.hex");
+
+  rc = write_kb_fw("files/HLK_hyn_Nopower_contor_tp_update_tmpkbhex01.hex");
   if (rc < 0) {
     return rc;
   }
@@ -45,7 +45,19 @@ static int flash()
     return rc;
   }
 
-  rc = write_tp_fw("files/fw.hex");
+  rc = write_kb_fw("files/fw.hex");
+  if (rc < 0) {
+    return rc;
+  }
+
+  return 0;
+}
+
+static int flash_kb()
+{
+  int rc;
+
+  rc = write_kb_fw("files/fw.hex");
   if (rc < 0) {
     return rc;
   }
@@ -61,8 +73,10 @@ int main(int argc, char *argv[])
     rc = usage(argv[0]);
   } else if (!strcmp(argv[1], "convert")) {
     rc = convert();
-  } else if (!strcmp(argv[1], "flash")) {
-    rc = flash();
+  } else if (!strcmp(argv[1], "flash-tp")) {
+    rc = flash_tp();
+  } else if (!strcmp(argv[1], "flash-kb")) {
+    rc = flash_kb();
   } else {
     rc = usage(argv[0]);
   }
