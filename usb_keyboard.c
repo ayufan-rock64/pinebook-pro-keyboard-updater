@@ -172,6 +172,36 @@ int write_serial_number(unsigned char sensor_direct, unsigned short serial_numbe
   return 0;
 }
 
+int convert_hex_file(const char *filename, const char *output_filename)
+{
+  unsigned char hex_file[MAX_BINLEN];
+  int hex_file_length;
+
+  printf("[*] Reading %s\n", filename);
+  hex_file_length = read_hexfile(filename, hex_file);
+  if (hex_file_length <= 0) {
+    printf(">>> Failed to read: %s\n", filename);
+    return -1;
+  }
+
+  printf("[*] Writing %s\n", output_filename);
+  FILE *fp = fopen(output_filename, "wb");
+  if (!fp) {
+    printf(">>> Failed to write: %s\n", output_filename);
+    return -1;
+  }
+
+  int rc = fwrite(hex_file, 1, hex_file_length, fp);
+  if (rc != hex_file_length) {
+    printf(">>> Failed to write all data: %d != %d\n", rc, hex_file_length);
+    fclose(fp);
+    return -1;
+  }
+
+  fclose(fp);
+  return 0;
+}
+
 int write_kb_fw(const char *filename)
 {
   unsigned char hex_file[MAX_BINLEN];
@@ -183,7 +213,7 @@ int write_kb_fw(const char *filename)
   printf("[*] Reading %s\n", filename);
   hex_file_length = read_hexfile(filename, hex_file);
   if (hex_file_length <= 0) {
-    printf("failed to read: %s\n", filename);
+    printf(">>> Failed to read: %s\n", filename);
     return -1;
   }
 

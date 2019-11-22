@@ -24,4 +24,6 @@ int read_bulk(unsigned char *data, int length);
 int write_bulk(unsigned char *data, int length);
 
 int write_kb_fw(const char *filename);
+int convert_hex_file(const char *filename, const char *output_filename);
+
 int write_tp_fw(const char *filename);
