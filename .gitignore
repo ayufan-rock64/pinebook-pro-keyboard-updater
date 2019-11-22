@@ -5,4 +5,5 @@ ui_*
 .qmake.*
 *.pro.*
 HLK_SHXXFXX_Update_tool
-
+.vscode/
+updater
