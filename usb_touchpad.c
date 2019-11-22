@@ -44,30 +44,14 @@
 
 static int touchpad_verify(int type, int pass)
 {
-    unsigned char data[6] = {0};
-    int rc;
+    unsigned char data[6] = {};
 
-    usleep(50*1000);
-    data[0] = SHORTREPOID;
-    data[1] = STATUSCMD;
-    data[2] = type;
-    rc = libusb_control_transfer(devh, 0x21, 0x09, 0x0305, 1, data, sizeof(data), 1000);
-
+    int rc = libusb_control_transfer(devh, 0xa1, 0x01, 0x0305, 1, data, sizeof(data), 2000);
     if(rc < 0) {
         return -1;
     }
 
-    usleep(50*1000);
-
-    data[0] = SHORTREPOID;
-    data[1] = 0;
-    data[2] = 0;
-    rc = libusb_control_transfer(devh, 0xa1, 0x01, 0x0305, 1, data, sizeof(data), 2000);
-    if(rc < 0) {
-        return -1;
-    }
-
-    if (data[1] != pass) {
+    if (data[0] != SHORTREPOID || data[1] != pass) {
         printf(">>> Verify mismatch: type=%02x, pass=%02x, received=%02x\n", type, pass, data[1]);
         return -1;
     }
@@ -77,9 +61,20 @@ static int touchpad_verify(int type, int pass)
 
 int try_touchpad_verify(int type, int pass)
 {
+    unsigned char data[6] = {
+        SHORTREPOID, STATUSCMD, type
+    };
+
+    int rc = libusb_control_transfer(devh, 0x21, 0x09, 0x0305, 1, data, sizeof(data), 1000);
+    if(rc < 0) {
+        return -1;
+    }
+
     int try;
 
     for (try = 0; try < 100; try++) {
+        usleep(50*1000);
+
         int rc = touchpad_verify(type, pass);
         if (rc == 0) {
             break;
@@ -118,7 +113,7 @@ int write_tp_fw(const char *filename)
         usleep(50*1000);
     }
 
-    if (try == 100) {
+    if (try == 20) {
         printf(">>> Failed to open in touchpad mode\n");
         goto finish;
     }

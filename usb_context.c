@@ -25,7 +25,6 @@ int open_usb(int vid, int pid, int indf)
     }
   }
 
-
   rc = libusb_claim_interface(devh, indf);
   if(rc < 0) {
     printf(">>> libusb_claim_interface: %d\n", rc);
@@ -102,11 +101,13 @@ finish:
 
 int reset_device()
 {
+  int rc;
+
   unsigned char data[6] = {
     0x05, 0x55, 0x55, 0x55, 0x55, 0x55
   };
 
-  int rc = libusb_control_transfer(devh, 0x21, 0x09, 0x0305, 0, data, sizeof(data), 100);
+  rc = libusb_control_transfer(devh, 0x21, 0x09, 0x0305, 0, data, sizeof(data), 100);
   if (rc < 0) {
     return rc;
   }
