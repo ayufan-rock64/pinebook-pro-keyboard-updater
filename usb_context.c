@@ -62,6 +62,11 @@ int open_user_mode()
   return rc;
 }
 
+int open_touchpad_mode()
+{
+  return open_usb(0x258a, 0x001f, 1);
+}
+
 int open_boot_mode()
 {
   return open_usb(0x0603, 0x1020, 0);

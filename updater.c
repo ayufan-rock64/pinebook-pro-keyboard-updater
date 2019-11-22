@@ -9,7 +9,20 @@ int main(int argc, char *argv[])
 
   rc = switch_to_boot_mode();
 
-  rc = write_kb_fw("files/N1401_8350_68F83_6444456626_Hynitron_20170323_452703_US_AN_NST_PTP_MB277_Tv9.hex");
+  rc = write_kb_fw("files/HLK_hyn_Nopower_contor_tp_update_tmpkbhex01.hex");
+  if (rc < 0) {
+    return rc;
+  }
+
+  rc = write_tp_fw("files/tpfw.bin");
+  if (rc < 0) {
+    return rc;
+  }
+
+  rc = write_kb_fw("files/fw.hex");
+  if (rc < 0) {
+    return rc;
+  }
 
   return rc;
 }

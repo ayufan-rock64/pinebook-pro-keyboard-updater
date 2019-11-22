@@ -197,7 +197,7 @@ int write_kb_fw(const char *filename)
   }
 
   if (try == 100) {
-    printf("failed to open in boot mode\n");
+    printf(">>> Failed to open in boot mode\n");
     goto finish;
   }
 

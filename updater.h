@@ -14,6 +14,8 @@ void close_usb();
 
 int open_user_mode();
 int open_boot_mode();
+int open_touchpad_mode();
+
 int switch_to_boot_mode();
 int reset_device();
 
@@ -21,3 +23,4 @@ int read_bulk(unsigned char *data, int length);
 int write_bulk(unsigned char *data, int length);
 
 int write_kb_fw(const char *filename);
+int write_tp_fw(const char *filename);
