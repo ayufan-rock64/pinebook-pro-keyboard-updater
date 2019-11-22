@@ -44,24 +44,7 @@
 
 #define PROGMODE				  0x0b
 
-static int touchpad_verify(int type, int pass)
-{
-    unsigned char data[6] = {};
-
-    int rc = libusb_control_transfer(devh, 0xa1, 0x01, 0x0305, 1, data, sizeof(data), 2000);
-    if(rc < 0) {
-        return -1;
-    }
-
-    if (data[0] != SHORTREPOID || data[1] != pass) {
-        printf(">>> Verify mismatch: type=%02x, pass=%02x, received=%02x\n", type, pass, data[1]);
-        return -1;
-    }
-
-    return 0;
-}
-
-int try_touchpad_verify(int type, int pass, int sendcmd)
+static int touchpad_verify(int type, int pass, int sendcmd)
 {
     if (sendcmd) {
         unsigned char data[6] = {
@@ -74,12 +57,31 @@ int try_touchpad_verify(int type, int pass, int sendcmd)
         }
     }
 
+    if (1) { // receive command
+        unsigned char data[6] = {};
+
+        int rc = libusb_control_transfer(devh, 0xa1, 0x01, 0x0305, 1, data, sizeof(data), 2000);
+        if(rc < 0) {
+            return -1;
+        }
+
+        if (data[0] != SHORTREPOID || data[1] != pass) {
+            printf(">>> Verify mismatch: type=%02x, pass=%02x, received=%02x\n", type, pass, data[1]);
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+int try_touchpad_verify(int type, int pass, int sendcmd)
+{
     int try;
 
     for (try = 0; try < 100; try++) {
         usleep(50*1000);
 
-        int rc = touchpad_verify(type, pass);
+        int rc = touchpad_verify(type, pass, sendcmd);
         if (rc == 0) {
             break;
         }
@@ -93,18 +95,20 @@ int try_touchpad_verify(int type, int pass, int sendcmd)
     return 0;
 }
 
-int write_tp_fw(const unsigned char *data, int data_length)
+int write_tp_fw(const unsigned char *fw, int fw_length)
 {
-    int len = (24*1024);
     int block_size = 1024;
     int try;
     int rc;
 
-    if (data_length < 24576 && len < data_length) {
+    if (fw_length < 24576) {
         printf("[*] Touchpad firmware needs to be %d, and is %d\n",
-            data_length, len);
+            fw_length, 24576);
         return -1;
     }
+
+    // cap to 24k
+    fw_length = 24 * 1024;
 
     printf("[*] Opening in touchpad mode\n");
     sleep(2);
@@ -129,7 +133,7 @@ int write_tp_fw(const unsigned char *data, int data_length)
 
     usleep(10000);
 
-    for(int offset = 0; offset < len; len += block_size)
+    for(int offset = 0; offset < fw_length; offset += block_size)
     {
         unsigned char data[16 + block_size];
         unsigned char *ptr = data;
@@ -144,7 +148,7 @@ int write_tp_fw(const unsigned char *data, int data_length)
         *ptr++ = 0xCC;
 
         memset(ptr, 0, block_size);
-        memcpy(ptr, &data[offset], MIN(block_size, len-offset));
+        memcpy(ptr, &fw[offset], MIN(block_size, fw_length-offset));
         ptr += block_size;
         
         *ptr++ = 0xEE;
