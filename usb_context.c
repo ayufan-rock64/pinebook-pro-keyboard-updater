@@ -7,6 +7,8 @@ int open_usb(int vid, int pid, int indf)
   rc = libusb_init(&ctx);
   if(rc < 0)
     return rc;
+  
+  devintf = indf;
 
   printf(">>> Trying to open VID:%04x PID:%04x...\n", vid&0xffff, pid&0xffff);
   devh = libusb_open_device_with_vid_pid(ctx, vid, pid);
@@ -42,7 +44,7 @@ void close_usb()
 {
   if (devh) {
     printf(">>> release interface\r\n");
-    libusb_release_interface(devh, 0); //释放接口
+    libusb_release_interface(devh, devintf);
     libusb_close(devh);
     libusb_exit(ctx);
     devh = NULL;
@@ -55,13 +57,21 @@ int open_user_mode()
   if (rc < 0) {
     rc = open_usb(0x258a, 0x001f, 1);
   }
+  if (rc < 0) {
+    rc = open_usb(0x258a, 0x000d, 1);
+  }
 
   return rc;
 }
 
 int open_touchpad_mode()
 {
-  return open_usb(0x258a, 0x001f, 1);
+  int rc = open_usb(0x258a, 0x001f, 1);
+  if (rc < 0) {
+    rc = open_usb(0x258a, 0x000d, 1);
+  }
+
+  return rc;
 }
 
 int open_boot_mode()
@@ -86,7 +96,7 @@ int switch_to_boot_mode()
     0x5, 0x75
   };
   rc = libusb_control_transfer(devh, 0x21, 0x09, 0x0305, 1,
-    dataOut, sizeof(dataOut), 100);
+    dataOut, sizeof(dataOut), 1000);
   if (rc < 0) {
     printf("failed to send switch command\n");
     goto finish;

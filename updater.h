@@ -6,6 +6,7 @@
 
 extern libusb_device_handle *devh;
 extern libusb_context *ctx;
+extern int devintf;
 
 #define MAX_BINLEN (14*1024)
 

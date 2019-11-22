@@ -2,6 +2,7 @@
 
 libusb_device_handle *devh;
 libusb_context *ctx;
+int devintf;
 
 int main(int argc, char *argv[])
 {

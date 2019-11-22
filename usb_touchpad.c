@@ -105,6 +105,7 @@ int write_tp_fw(const char *filename)
     }
 
     printf("[*] Opening in touchpad mode\n");
+    sleep(2);
     for (try = 0; try < 20; try++) {
         rc = open_touchpad_mode();
         if (rc >= 0) {
