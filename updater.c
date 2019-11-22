@@ -13,7 +13,7 @@ extern unsigned int firmware_tpfw_bin_len;
 
 static int usage(const char *cmd)
 {
-  printf("usage: %s [convert|flash-kb|flash-tp]\n", cmd);
+  printf("usage: %s [convert|flash-kb|flash-tp|flash-tp-update]\n", cmd);
   return -1;
 }
 
@@ -42,17 +42,19 @@ static int flash_tp()
 {
   int rc;
 
-  rc = write_kb_fw(firmware_fw_tp_update_hex, firmware_fw_tp_update_hex_len);
-  if (rc < 0) {
-    return rc;
-  }
-
   rc = write_tp_fw(firmware_tpfw_bin, firmware_tpfw_bin_len);
   if (rc < 0) {
     return rc;
   }
 
-  rc = write_kb_fw(firmware_fw_hex, firmware_fw_hex_len);
+  return 0;
+}
+
+static int flash_tp_update()
+{
+  int rc;
+
+  rc = write_kb_fw(firmware_fw_tp_update_hex, firmware_fw_tp_update_hex_len);
   if (rc < 0) {
     return rc;
   }
@@ -82,6 +84,8 @@ int main(int argc, char *argv[])
     rc = convert();
   } else if (!strcmp(argv[1], "flash-tp")) {
     rc = flash_tp();
+  } else if (!strcmp(argv[1], "flash-tp-update")) {
+    rc = flash_tp_update();
   } else if (!strcmp(argv[1], "flash-kb")) {
     rc = flash_kb();
   } else {
