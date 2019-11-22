@@ -13,7 +13,7 @@ extern unsigned int firmware_tpfw_bin_len;
 
 static int usage(const char *cmd)
 {
-  printf("usage: %s [convert|flash-kb|flash-tp|flash-tp-update]\n", cmd);
+  printf("usage: %s [step-1|step-2]\n", cmd);
   return -1;
 }
 
@@ -123,13 +123,9 @@ int main(int argc, char *argv[])
   } else if (!strcmp(argv[1], "convert")) {
     rc = convert();
   } else if (!strcmp(argv[1], "step-1")) {
-    printf("Running STEP-1...\n");
-    rc = flash_kb();
-    if (!rc) {
-      flash
-    }
+    rc = step_1();
   } else if (!strcmp(argv[1], "step-2")) {
-    rc = flash_tp_update();
+    rc = step_2();
   } else if (!strcmp(argv[1], "flash-tp")) {
     rc = flash_tp();
   } else if (!strcmp(argv[1], "flash-tp-update")) {
