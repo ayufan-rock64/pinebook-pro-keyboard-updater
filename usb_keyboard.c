@@ -187,6 +187,8 @@ int write_kb_fw(const char *filename)
     return -1;
   }
 
+  switch_to_boot_mode();
+
   printf("[*] Opening in boot mode\n");
   for (try = 0; try < 100; try++) {
     rc = open_boot_mode();
@@ -259,11 +261,13 @@ int write_kb_fw(const char *filename)
     goto finish;
   }
 
+#if 0
   printf("[*] Writing serial number...\n");
   write_serial_number(1, 0x4100);
   if (rc < 0) {
     goto finish;
   }
+#endif
 
   printf("[*] Reseting device?\n");
   reset_device();

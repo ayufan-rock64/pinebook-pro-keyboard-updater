@@ -42,26 +42,7 @@
 
 #define PROGMODE				  0x0b
 
-static int erase_tp_flash()
-{
-    unsigned char data[6] = {SHORTREPOID, 0};
-    
-    printf(">>> Erasing TP flash...: %d\n", data[2]);
-
-    int rc = libusb_control_transfer(devh, 0xa1, 0x01, 0x0305, 1, data, sizeof(data), 2000);
-    if (rc < 0) {
-        return rc;
-    }
-
-    printf(">>> Erased? %02x\n", data[1]);
-
-    if (data[1] != ICERASE_PASS) {
-        return -1;
-    }
-    return 0;
-}
-
-int touchpad_verify(int type, int pass)
+static int touchpad_verify(int type, int pass)
 {
     unsigned char data[6] = {0};
     int rc;
@@ -79,12 +60,15 @@ int touchpad_verify(int type, int pass)
     usleep(50*1000);
 
     data[0] = SHORTREPOID;
+    data[1] = 0;
+    data[2] = 0;
     rc = libusb_control_transfer(devh, 0xa1, 0x01, 0x0305, 1, data, sizeof(data), 2000);
     if(rc < 0) {
         return -1;
     }
 
     if (data[1] != pass) {
+        printf(">>> Verify mismatch: type=%02x, pass=%02x, received=%02x\n", type, pass, data[1]);
         return -1;
     }
 
@@ -103,7 +87,7 @@ int try_touchpad_verify(int type, int pass)
     }
 
     if (try == 100) {
-        printf(">>> Touchpad verify data failed\n");
+        printf(">>> Touchpad verify (type=%d, pass=%d) data failed\n", type, pass);
         return -1;
     }
 
@@ -139,9 +123,9 @@ int write_tp_fw(const char *filename)
         goto finish;
     }
 
-    rc = erase_tp_flash();
+    rc = try_touchpad_verify(ICERASE, ICERASE_PASS);
     if (rc < 0) {
-        printf(">>> Failed to erase flash\n");
+        printf(">>> Touchpad erase failed\n");
         goto finish;
     }
 
@@ -199,7 +183,7 @@ int write_tp_fw(const char *filename)
     }
 
     usleep(50*1000);
-    
+
     rc = try_touchpad_verify(VERIFY_CHECKSUM, VERIFY_CHECKSUM_PASS);
     if (rc < 0) {
         printf(">>> Touchpad end program verify\n");

@@ -16,17 +16,15 @@ int open_usb(int vid, int pid, int indf)
   }
 
   rc = libusb_kernel_driver_active(devh, indf);
-  if (rc != 1) {
-    printf(">>> libusb_kernel_driver_active: %d\n", rc);
-    goto finish;
+  if (rc > 0) {
+    printf(">>> Kernel Driver Active\n");
+    rc = libusb_detach_kernel_driver(devh, indf);
+    if (rc < 0) {
+      printf(">>> libusb_detach_kernel_driver: %d\n", rc);
+      goto finish;
+    }
   }
 
-  printf(">>> Kernel Driver Active\n");
-  rc = libusb_detach_kernel_driver(devh, indf);
-  if (rc != 0) {
-    printf(">>> libusb_detach_kernel_driver: %d\n", rc);
-    goto finish;
-  }
 
   rc = libusb_claim_interface(devh, indf);
   if(rc < 0) {
