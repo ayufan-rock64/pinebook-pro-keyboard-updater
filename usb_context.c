@@ -81,12 +81,19 @@ int open_boot_mode()
 
 int switch_to_boot_mode()
 {
-  int rc;
+  int rc, try;
 
   printf("[*] Opening in user mode...\n");
-  rc = open_user_mode();
-  if (rc < 0) {
-    printf("Failed to open in user mode\n");
+  for (try = 0; try < 3; try++) {
+    rc = open_user_mode();
+    if (rc >= 0) {
+      break;
+    }
+    usleep(500*1000);
+  }
+
+  if (try == 3) {
+    printf(">>> Failed to open in user mode\n");
     goto finish;
   }
 

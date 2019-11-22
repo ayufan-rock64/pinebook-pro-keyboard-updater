@@ -111,13 +111,12 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
     fw_length = 24 * 1024;
 
     printf("[*] Opening in touchpad mode\n");
-    sleep(2);
-    for (try = 0; try < 20; try++) {
+    for (try = 0; try < 3; try++) {
         rc = open_touchpad_mode();
         if (rc >= 0) {
             break;
         }
-        usleep(50*1000);
+        usleep(500*1000);
     }
 
     if (try == 20) {
@@ -212,5 +211,6 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
     printf("[*] Finished succesfully!\n");
 
 finish:
+    close_usb();
     return rc;
 }

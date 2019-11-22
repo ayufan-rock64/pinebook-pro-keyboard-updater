@@ -220,15 +220,15 @@ int write_kb_fw(const unsigned char *data, int data_length)
   switch_to_boot_mode();
 
   printf("[*] Opening in boot mode\n");
-  for (try = 0; try < 10; try++) {
+  for (try = 0; try < 3; try++) {
     rc = open_boot_mode();
     if (rc >= 0) {
       break;
     }
-    usleep(100*1000);
+    usleep(500*1000);
   }
 
-  if (try == 10) {
+  if (try == 3) {
     printf(">>> Failed to open in boot mode\n");
     goto finish;
   }
