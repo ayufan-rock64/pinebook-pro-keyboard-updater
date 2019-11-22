@@ -13,7 +13,7 @@ extern unsigned int firmware_tpfw_bin_len;
 
 static int usage(const char *cmd)
 {
-  printf("usage: %s [convert|flash-kb|flash-tb]\n", cmd);
+  printf("usage: %s [convert|flash-kb|flash-tp]\n", cmd);
   return -1;
 }
 
