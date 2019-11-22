@@ -23,7 +23,7 @@ int reset_device();
 int read_bulk(unsigned char *data, int length);
 int write_bulk(unsigned char *data, int length);
 
-int write_kb_fw(const char *filename);
-int convert_hex_file(const char *filename, const char *output_filename);
+int write_kb_fw(const unsigned char *data, int data_length);
+int convert_hex_data(const unsigned char *data, int data_length, const char *output_filename);
 
-int write_tp_fw(const char *filename);
+int write_tp_fw(const unsigned char *data, int data_length);

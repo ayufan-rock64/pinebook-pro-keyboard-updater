@@ -4,6 +4,13 @@ libusb_device_handle *devh;
 libusb_context *ctx;
 int devintf;
 
+extern unsigned char firmware_fw_tp_update_hex[];
+extern unsigned int firmware_fw_tp_update_hex_len;
+extern unsigned char firmware_fw_hex[];
+extern unsigned int firmware_fw_hex_len;
+extern unsigned char firmware_tpfw_bin[];
+extern unsigned int firmware_tpfw_bin_len;
+
 static int usage(const char *cmd)
 {
   printf("usage: %s [convert|flash-kb|flash-tb]\n", cmd);
@@ -14,16 +21,16 @@ static int convert()
 {
   int rc;
     
-  rc = convert_hex_file(
-    "files/Hynitron_NO_power_co_tp_update_kbfw.hex",
-    "files/Hynitron_NO_power_co_tp_update_kbfw.bin");
+  rc = convert_hex_data(
+    firmware_fw_tp_update_hex, firmware_fw_tp_update_hex_len,
+    "fw_tp_update.bin");
   if (rc < 0) {
     return rc;
   }
 
-  rc = convert_hex_file(
-    "files/fw.hex",
-    "files/fw.bin");
+  rc = convert_hex_data(
+    firmware_fw_hex, firmware_fw_hex_len,
+    "fw.bin");
   if (rc < 0) {
     return rc;
   }
@@ -35,17 +42,17 @@ static int flash_tp()
 {
   int rc;
 
-  rc = write_kb_fw("files/HLK_hyn_Nopower_contor_tp_update_tmpkbhex01.hex");
+  rc = write_kb_fw(firmware_fw_tp_update_hex, firmware_fw_tp_update_hex_len);
   if (rc < 0) {
     return rc;
   }
 
-  rc = write_tp_fw("files/tpfw.bin");
+  rc = write_tp_fw(firmware_tpfw_bin, firmware_tpfw_bin_len);
   if (rc < 0) {
     return rc;
   }
 
-  rc = write_kb_fw("files/fw.hex");
+  rc = write_kb_fw(firmware_fw_hex, firmware_fw_hex_len);
   if (rc < 0) {
     return rc;
   }
@@ -57,7 +64,7 @@ static int flash_kb()
 {
   int rc;
 
-  rc = write_kb_fw("files/fw.hex");
+  rc = write_kb_fw(firmware_fw_hex, firmware_fw_hex_len);
   if (rc < 0) {
     return rc;
   }

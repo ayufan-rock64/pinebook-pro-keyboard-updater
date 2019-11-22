@@ -7,3 +7,4 @@ ui_*
 HLK_SHXXFXX_Update_tool
 .vscode/
 updater
+firmware/*.c

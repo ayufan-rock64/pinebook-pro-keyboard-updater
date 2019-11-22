@@ -1,21 +1,25 @@
 #include "updater.h"
 
-static int read_hexfile(const char *filename, unsigned char output[MAX_BINLEN])
+static int read_hexdata(const unsigned char *data, int data_length, unsigned char output[MAX_BINLEN])
 {
-  FILE* in;
-
-  in = fopen(filename, "rt");
-  if (!in) {
-    printf("failed to open: %s\n", filename);
-    return -1;
-  }
-
   unsigned char pbuffer[MAX_BINLEN];
   const char *endstr = ":00000001FF\n";
   char strbuf[256];
   int max_address = 0;
 
-  while (fgets(strbuf, 256, in)) {
+  int data_offset = 0;
+
+  while (data_offset < data_length) {
+    // read line
+    int strbuf_idx = 0;
+    while (strbuf_idx < sizeof(strbuf)-1) {
+      strbuf[strbuf_idx++] = data[data_offset++];
+      if (strbuf[strbuf_idx-1] == '\n') {
+        break;
+      }
+    }
+    strbuf[strbuf_idx] = 0;
+
     if (strcmp(endstr, strbuf) == 0) {
       break;
     }
@@ -51,8 +55,6 @@ static int read_hexfile(const char *filename, unsigned char output[MAX_BINLEN])
       }
     }
   }
-
-  fclose(in);
 
   for (int i = 0; i < max_address; i++)
   {
@@ -172,15 +174,14 @@ int write_serial_number(unsigned char sensor_direct, unsigned short serial_numbe
   return 0;
 }
 
-int convert_hex_file(const char *filename, const char *output_filename)
+int convert_hex_data(const unsigned char *data, int data_length, const char *output_filename)
 {
   unsigned char hex_file[MAX_BINLEN];
   int hex_file_length;
 
-  printf("[*] Reading %s\n", filename);
-  hex_file_length = read_hexfile(filename, hex_file);
+  hex_file_length = read_hexdata(data, data_length, hex_file);
   if (hex_file_length <= 0) {
-    printf(">>> Failed to read: %s\n", filename);
+    printf(">>> Failed to read: %d\n", data_length);
     return -1;
   }
 
@@ -202,7 +203,7 @@ int convert_hex_file(const char *filename, const char *output_filename)
   return 0;
 }
 
-int write_kb_fw(const char *filename)
+int write_kb_fw(const unsigned char *data, int data_length)
 {
   unsigned char hex_file[MAX_BINLEN];
   unsigned char read_hex_file[MAX_BINLEN];
@@ -210,10 +211,9 @@ int write_kb_fw(const char *filename)
   int rc;
   int try;
 
-  printf("[*] Reading %s\n", filename);
-  hex_file_length = read_hexfile(filename, hex_file);
+  hex_file_length = read_hexdata(data, data_length, hex_file);
   if (hex_file_length <= 0) {
-    printf(">>> Failed to read: %s\n", filename);
+    printf(">>> Failed to read: %d\n", data_length);
     return -1;
   }
 

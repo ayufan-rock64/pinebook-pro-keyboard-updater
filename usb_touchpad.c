@@ -91,19 +91,17 @@ int try_touchpad_verify(int type, int pass, int sendcmd)
     return 0;
 }
 
-int write_tp_fw(const char *filename)
+int write_tp_fw(const unsigned char *data, int data_length)
 {
     int len = (24*1024);
     int block_size = 1024;
-    FILE *fp = NULL;
     int try;
     int rc;
 
-    printf("[*] Reading %s\n", filename);
-    fp = fopen(filename, "rt");
-    if (!fp) {
-        printf(">>> Failed to read: %s\n", filename);
-        goto finish;
+    if (data_length != len) {
+        printf("[*] Touchpad firmware needs to be %d, and is %d\n",
+            data_length, len);
+        return -1;
     }
 
     printf("[*] Opening in touchpad mode\n");
@@ -143,7 +141,7 @@ int write_tp_fw(const char *filename)
         *ptr++ = 0xCC;
         *ptr++ = 0xCC;
 
-        fread(ptr, 1, block_size, fp);
+        memcpy(ptr, &data[offset], block_size);
         ptr += block_size;
         
         *ptr++ = 0xEE;
@@ -197,8 +195,5 @@ int write_tp_fw(const char *filename)
     }
 
 finish:
-    if(fp) {
-        fclose(fp);
-    }
     return rc;
 }
