@@ -26,10 +26,16 @@ static int read_block(unsigned char *data, int offset, int length)
   transfer[0] = 0x06;//report id
   transfer[1] = 0x72;
 
-  memcpy(&transfer[2], data, length);
-
-  return libusb_control_transfer(devh, 0xa1, 0x01, 0x0306, 0,
+  int rc = libusb_control_transfer(devh, 0xa1, 0x01, 0x0306, 0,
     transfer, sizeof(transfer), 2000);
+
+  if (rc < 0) {
+    return rc;
+  }
+
+  memcpy(&data[offset], &transfer[2], length);
+
+  return 0;
 }
 
 int read_bulk(unsigned char *data, int length)

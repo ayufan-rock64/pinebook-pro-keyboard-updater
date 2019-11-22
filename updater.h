@@ -12,6 +12,12 @@ extern libusb_context *ctx;
 int open_usb(int vid, int pid, int indf);
 void close_usb();
 
+int open_user_mode();
+int open_boot_mode();
+int switch_to_boot_mode();
+int reset_device();
+
 int read_bulk(unsigned char *data, int length);
 int write_bulk(unsigned char *data, int length);
-int read_binfile(const char *filename, unsigned char output[MAX_BINLEN]);
+
+int write_kb_fw(const char *filename);

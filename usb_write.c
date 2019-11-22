@@ -58,7 +58,7 @@ int write_bulk(unsigned char *data, int length)
   data[0] = first_byte;
 
   // retry write of first block
-  rc = write_block_start(block_size);
+  rc = write_block_start(length);
   if (rc < 0) {
     return rc;
   }
