@@ -170,6 +170,8 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
         
         usleep(150*1000);
 
+        printf(">>> Verifying '1k-data'...\n");
+
         rc = try_touchpad_verify(VERIFY1KDATA, VERIFY1KDATA_PASS, 1);
         if (rc < 0) {
             printf(">>> Touchpad verify data failed\n");
@@ -178,6 +180,8 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
     }
 
     usleep(50*1000);
+    
+    printf("[*] Verifying 'end-program'...\n");
 
     rc = try_touchpad_verify(ENDPROGRAM, ENDPROGRAM_PASS, 1);
     if (rc < 0) {
@@ -187,6 +191,8 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
 
     usleep(50*1000);
 
+    printf("[*] Verifying 'checksum'...\n");
+
     rc = try_touchpad_verify(VERIFY_CHECKSUM, VERIFY_CHECKSUM_PASS, 1);
     if (rc < 0) {
         printf(">>> Touchpad end program verify\n");
@@ -194,12 +200,16 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
     }
 
     usleep(50*1000);
+
+    printf("[*] Verifying 'program'...\n");
     
     rc = try_touchpad_verify(PROGRAMPASS, 0, 1);
     if (rc < 0) {
         printf(">>> Touchpad end program verify\n");
         goto finish;
     }
+
+    printf("[*] Finished succesfully!\n");
 
 finish:
     return rc;

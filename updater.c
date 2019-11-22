@@ -74,6 +74,46 @@ static int flash_kb()
   return 0;
 }
 
+static int step_1()
+{
+  int rc;
+
+  printf("Running STEP-1...\n");
+
+  printf("[*] Flashing keyboard updater firmware...\n");
+  rc = flash_tp_update();
+  if (rc < 0) {
+    return rc;
+  }
+  
+  printf("[*] Please reboot now, and run `step-2`.\n");
+  
+  return 0;
+}
+
+static int step_2()
+{
+  int rc;
+
+  printf("Running STEP-2...\n");
+
+  printf("[*] Flashing touchpad firmware...\n");
+  rc = flash_tp();
+  if (rc < 0) {
+    return rc;
+  }
+
+  printf("[*] Flashing keyboard firmware...\n");
+  rc = flash_kb();
+  if (rc < 0) {
+    return rc;
+  }
+
+  printf("[*] All done! Your keyboard and touchpad should be updated.\n");
+
+  return 0;
+}
+
 int main(int argc, char *argv[])
 {
   int rc = 0;
@@ -82,6 +122,14 @@ int main(int argc, char *argv[])
     rc = usage(argv[0]);
   } else if (!strcmp(argv[1], "convert")) {
     rc = convert();
+  } else if (!strcmp(argv[1], "step-1")) {
+    printf("Running STEP-1...\n");
+    rc = flash_kb();
+    if (!rc) {
+      flash
+    }
+  } else if (!strcmp(argv[1], "step-2")) {
+    rc = flash_tp_update();
   } else if (!strcmp(argv[1], "flash-tp")) {
     rc = flash_tp();
   } else if (!strcmp(argv[1], "flash-tp-update")) {
