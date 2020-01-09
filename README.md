@@ -2,6 +2,8 @@
 
 This application does upgrade firmware of the built-in keyboard and touchpad.
 
+**DO NOT USE WITH ANSI KEYBOARD. THIS IS NOT YET SUPPORTED**
+
 ## Compiling
 
 ```bash
