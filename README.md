@@ -19,13 +19,15 @@ Pinebook Pro offers two keyboard types: `ISO` and `ANSI`.
 
 Append your model type after the `step-1` or `step-2` command specifying `iso` or `ansi`.
 
+**In order to update with `ANSI` keyboard the external keyboard will be required as for the duration of the process the keyboard will stop working.**
+
 ## Update all firmwares
 
 You need to do all of that in correct order,
 if at any point process fails, start it from point 1.:
 
 1. Run `step-1 iso` or `step-1 ansi` of update process: `sudo ./updater step-1 iso`,
-1. After `step-1 iso` or `step-1 ansi` touchpad **will not work**, keyboard works as normal,
+1. After `step-1 iso` or `step-1 ansi` touchpad **will not work**, keyboard works as normal (this is true only for **ISO**, the **ANSI** keyboard will not work after `step-1`),
 1. Reboot with `sudo reboot`,
 1. After reboot, run `step-2 iso` or `step-2 ansi` of update process: `sudo ./updater step-2`,
 1. Reboot with `sudo reboot`,
