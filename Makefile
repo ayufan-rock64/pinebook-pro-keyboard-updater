@@ -6,7 +6,8 @@ SOURCES := \
 	usb_keyboard.c \
 	usb_touchpad.c \
 	firmware/fw_tp_update.hex.c \
-	firmware/fw.hex.c \
+	firmware/fw_iso.hex.c \
+	firmware/fw_ansi.hex.c \
 	firmware/tpfw.bin.c \
 
 all: updater

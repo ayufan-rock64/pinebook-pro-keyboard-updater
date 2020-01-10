@@ -13,15 +13,21 @@ sudo apt-get install build-essential libusb-1.0-0-dev xxd
 make
 ```
 
+## Pick right keyboard model
+
+Pinebook Pro offers two keyboard types: `ISO` and `ANSI`.
+
+Append your model type after the `step-1` or `step-2` command specifying `iso` or `ansi`.
+
 ## Update all firmwares
 
 You need to do all of that in correct order,
 if at any point process fails, start it from point 1.:
 
-1. Run `step-1` of update process: `sudo ./updater step-1`,
-1. After `step-1` touchpad **will not work**, keyboard works as normal,
+1. Run `step-1 iso` or `step-1 ansi` of update process: `sudo ./updater step-1 iso`,
+1. After `step-1 iso` or `step-1 ansi` touchpad **will not work**, keyboard works as normal,
 1. Reboot with `sudo reboot`,
-1. After reboot, run `step-2` of update process: `sudo ./updater step-2`,
+1. After reboot, run `step-2 iso` or `step-2 ansi` of update process: `sudo ./updater step-2`,
 1. Reboot with `sudo reboot`,
 1. After reboot, your keyboard and touchpad firmware should be updated.
 
@@ -32,19 +38,29 @@ cd pinebook-pro-keyboard-updater
 sudo apt-get install build-essential libusb-1.0-0-dev xxd
 make
 
+# For ISO keyboard
 # step-1
-sudo ./updater step-1
+sudo ./updater step-1 iso
 sudo reboot
 
 # after reboot, step-2
-sudo ./updater step-2
+sudo ./updater step-2 iso
+sudo reboot
+
+# For ANSI keyboard
+# step-1
+sudo ./updater step-1 ansi
+sudo reboot
+
+# after reboot, step-2
+sudo ./updater step-2 ansi
 sudo reboot
 ```
 
 ### Log from `STEP-1`
 
 ```bash
-$ sudo ./updater step-1
+$ sudo ./updater step-1 iso
 Running STEP-1...
 [*] Flashing keyboard updater firmware...
 >>> Fix hex file
@@ -91,7 +107,7 @@ Running STEP-1...
 ### Log from `STEP-2`
 
 ```bash
-$ sudo ./updater step-2
+$ sudo ./updater step-2 iso
 Running STEP-2...
 [*] Flashing touchpad firmware...
 [*] Opening in touchpad mode
@@ -150,7 +166,7 @@ Running STEP-2...
 [*] Verifying 'program'...
 [*] Finished succesfully!
 >>> release interface
-[*] Flashing keyboard firmware...
+[*] Flashing ISO keyboard firmware...
 >>> Fix hex file
 [*] Opening in user mode...
 >>> Trying to open VID:258a PID:001e...
