@@ -119,7 +119,7 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
         usleep(500*1000);
     }
 
-    if (try == 20) {
+    if (try >= 3) {
         printf(">>> Failed to open in touchpad mode\n");
         goto finish;
     }
