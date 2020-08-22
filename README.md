@@ -1,6 +1,6 @@
 # Pinebook Pro keyboard/touchpad firmware updater
 
-This application does upgrade firmware of the built-in keyboard and touchpad.
+This application upgrades the firmware of the built-in keyboard and touchpad.
 
 ## Compiling
 
@@ -26,10 +26,13 @@ if at any point process fails, start it from point 1.:
 
 1. Run `step-1 iso` or `step-1 ansi` of update process: `sudo ./updater step-1 iso`,
 1. After `step-1 iso` or `step-1 ansi` touchpad **will not work**, keyboard works as normal (this is true only for **ISO**, the **ANSI** keyboard will not work after `step-1`),
-1. Reboot with `sudo reboot`,
+1. Reboot with `sudo reboot` (if you run into problems try `sudo shutdown -h 0` instead)
 1. After reboot, run `step-2 iso` or `step-2 ansi` of update process: `sudo ./updater step-2`,
 1. Reboot with `sudo reboot`,
 1. After reboot, your keyboard and touchpad firmware should be updated.
+
+If you run into problems it may help to run this in a virtual console, without using the graphical interface. You can use e.g. Ctrl Alt F2 to get there.
+
 
 ```bash
 # compile
